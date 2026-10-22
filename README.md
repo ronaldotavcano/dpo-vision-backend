@@ -18,9 +18,9 @@ Uma aplicação web onde o auditor faz o upload de contratos (incluindo PDFs esc
 ##  Tecnologias e Bibliotecas Utilizadas
 
 ### Frontend
-- **React + Vite:** Construção da interface em formato SPA para carregamento rápido e desenvolvimento ágil, substituindo o Next.js pela leveza do Vite.
+- **Vue.js:** Construção da interface em formato SPA para carregamento rápido e desenvolvimento ágil.
 - **Tailwind CSS:** Estilização rápida e responsiva, garantindo que o módulo se integre visualmente aos padrões internos.
-- **react-pdf:** Renderização interativa do contrato e das marcações diretamente no navegador do auditor.
+- **rvue-pdf:** Renderização interativa do contrato e das marcações diretamente no navegador do auditor.
 
 ### Backend & Processamento de Documentos
 - **PyMuPDF:** Manipulação de alta performance para ler PDFs, encontrar coordenadas exatas no texto e injetar as marcações visuais (highlights) no arquivo final.
