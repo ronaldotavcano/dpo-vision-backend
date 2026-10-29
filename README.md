@@ -17,12 +17,21 @@ Uma aplicação web onde o auditor faz o upload de contratos (incluindo PDFs esc
 
 ##  Tecnologias e Bibliotecas Utilizadas
 
-### Frontend
-- **Vue.js:** Construção da interface em formato Saas, simulando como seria o sistema da DPO.
-- **Tailwind CSS:** Estilização rápida e responsiva, garantindo que o módulo se integre visualmente aos padrões internos.
-- **vue-pdf:** Renderização interativa do contrato e das marcações diretamente no navegador do auditor.
-
 ### Backend & Processamento de Documentos
 - **PyMuPDF:** Manipulação de alta performance para ler PDFs, encontrar coordenadas exatas no texto e injetar as marcações visuais (highlights) no arquivo final.
 - **Pytesseract (OCR):** Motor integrado para ler e extrair textos de documentos escaneados.
-- **LangChain:** Framework responsável pela busca semântica, processando o contexto desejado pelo auditor com o uso de modelos de linguagem (LLMs).
+
+### Dependências
+
+- **Python:** Versão 3.14.4
+- **Pymupdf** Versão 2.0
+- **Pytesseract** Versão 0.3.13
+
+### Como Rodar
+
+```py
+python3 -m venv .venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+```
+
