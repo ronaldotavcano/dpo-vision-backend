@@ -1,0 +1,18 @@
+# Instale com: python -m pip install -r requirements.txt
+
+# API, validacao dos dados e recebimento de arquivos
+fastapi
+pydantic
+uvicorn
+python-multipart
+
+# Requisicoes HTTP
+requests
+
+# Leitura de imagens, PDFs e OCR
+Pillow
+PyMuPDF
+pytesseract
+
+# Dependencia externa: instale o Tesseract OCR no sistema com o idioma por.
+# processamento.py espera C:\Program Files\Tesseract-OCR\tesseract.exe.
