@@ -6,13 +6,10 @@ pydantic
 uvicorn
 python-multipart
 
-# Requisicoes HTTP
-requests
-
 # Leitura de imagens, PDFs e OCR
 Pillow
 PyMuPDF
 pytesseract
 
 # Dependencia externa: instale o Tesseract OCR no sistema com o idioma por.
-# processamento.py espera C:\Program Files\Tesseract-OCR\tesseract.exe.
+# Configure TESSERACT_CMD se o executavel nao estiver no PATH; TESSERACT_LANG padrao: por.
