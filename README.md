@@ -37,3 +37,12 @@ A API atualmente executa OCR em todas as paginas de um PDF. Busca semantica, des
 3. Se o Tesseract nao estiver no PATH, defina `TESSERACT_CMD` com o caminho completo do executavel. Defina `TESSERACT_LANG` para outro idioma se necessario (padrao: `por`). No PowerShell, por exemplo: `$env:TESSERACT_CMD = "C:\Program Files\Tesseract-OCR\tesseract.exe"`.
 4. Inicie a API com `python -m uvicorn api_tesseract:app --reload` e acesse `http://127.0.0.1:8000/docs`. Envie um PDF no campo multipart `arquivo` de `POST /tesseract`. A resposta `dados` contem TSV com os numeros das paginas.
 O backend e acessado pela API e esta organizado em `dpo_vision/domain`, `application`, `infrastructure` e `api`.
+
+
+Notas Mapelli: Configurar o env antes de tentar rodar:
+
+Rodar isso no powershell
+$env:TESSERACT_CMD = "C:\Program Files\Tesseract-OCR\tesseract.exe" <- Caminho do tesseract na sua máquina
+$env:TESSERACT_LANG = "por"
+
+python -m uvicorn api_tesseract:app --reload

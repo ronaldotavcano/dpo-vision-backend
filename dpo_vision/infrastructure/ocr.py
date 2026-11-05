@@ -18,16 +18,16 @@ class TesseractPdfProcessor:
 
     def process(self, content: bytes) -> DocumentOcr:
         if not content:
-            raise InvalidDocumentError("O PDF est? vazio.")
+            raise InvalidDocumentError("O PDF está vazio.")
         try:
             document = pymupdf.open(stream=content, filetype="pdf")
         except (pymupdf.FileDataError, ValueError) as exc:
-            raise InvalidDocumentError("O arquivo n?o ? um PDF v?lido.") from exc
+            raise InvalidDocumentError("O arquivo não é um PDF válido.") from exc
         try:
             if document.needs_pass:
-                raise InvalidDocumentError("PDF protegido por senha n?o ? suportado.")
+                raise InvalidDocumentError("PDF protegido por senha não é suportado.")
             if document.page_count == 0:
-                raise InvalidDocumentError("O PDF n?o cont?m p?ginas.")
+                raise InvalidDocumentError("O PDF não contém páginas.")
             pages = []
             for index, page in enumerate(document):
                 pixmap = page.get_pixmap(matrix=pymupdf.Matrix(300 / 72, 300 / 72))
@@ -35,7 +35,7 @@ class TesseractPdfProcessor:
                     try:
                         data = pytesseract.image_to_data(image, lang=self.language)
                     except (pytesseract.TesseractNotFoundError, pytesseract.TesseractError, OSError) as exc:
-                        raise OcrUnavailableError("Tesseract ou dados do idioma configurado indispon?veis.") from exc
+                        raise OcrUnavailableError("Tesseract ou dados do idioma configurado indisponíveis.") from exc
                 pages.append(PageOcr(index + 1, data))
             return DocumentOcr(tuple(pages))
         finally:
