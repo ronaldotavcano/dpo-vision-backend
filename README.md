@@ -30,8 +30,26 @@ Uma aplicação web onde o auditor faz o upload de contratos (incluindo PDFs esc
 ### Como Rodar
 
 ```py
+
+# Criação e Ativação do ambiente virtual
 python3 -m venv .venv
 source ./venv/bin/activate
+
+# instalação das dependências
 pip install -r requirements.txt
+
+# Se o Tesseract não estiver no Path
+env:TESSERACT_CMD = "C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+# Iniciando a API
+
+python -m uvicorn api_tesseract:app --reload
+
+#/docs --> usar local
+
+#Endpoints:
+
+Post /tesseract
+
 ```
 
