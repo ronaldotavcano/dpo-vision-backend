@@ -1,61 +1,100 @@
-# DPO Vision 
+# DPO Vision
 
-## Descrição do Projeto
-O DPO Vision é um módulo avançado de análise de documentos impulsionado por Inteligência Artificial e OCR, projetado para atuar como uma ferramenta interna focada em compliance. O objetivo principal é otimizar as auditorias de conformidade com a LGPD para a DPOnet (https://dponet.com.br), automatizando a leitura, a busca semântica e a marcação visual de termos críticos em contratos e documentos digitalizados, reduzindo drasticamente o tempo de análise manual.
+O DPO Vision é um backend de apoio à análise de documentos para auditores de privacidade. Ele recebe um PDF e um prompt, reconhece o texto e identifica palavras ou trechos relacionados ao que foi solicitado. O objetivo é ajudar na revisão humana de documentos, sem determinar automaticamente sua conformidade com a LGPD.
 
-## O Problema
-Atualmente, após a emissão de um parecer técnico sobre um contrato por uma pelo DAI, a validação das informações da LGPD exige que o auditor vasculhe o documento inteiro manualmente para encontrar a base daquele parecer ou termos específicos. Esse processo gera um consumo de tempo desnecessário e pouco escalável.
+## Estado atual
 
-## A Solução
-Uma aplicação web onde o auditor faz o upload de contratos (incluindo PDFs escaneados) e define o contexto a ser filtrado. Através de OCR e busca semântica, o sistema processa o arquivo, localiza os trechos relevantes e retorna o documento visualmente grifado na própria tela, além de disponibilizar o download do PDF final com todas as marcações.
+- A API recebe PDFs por upload e executa OCR com Tesseract em todas as páginas, inclusive em PDFs que já possuem texto.
+- O texto reconhecido e o prompt são enviados à API do Gemini. O Gemini retorna palavras ou trechos; o backend associa os resultados ao OCR e devolve suas páginas e coordenadas.
+- A resposta fornece dados para um frontend desenhar as marcações. O visualizador, a geração de um PDF marcado e o download desse PDF ainda não estão implementados neste repositório.
+- A qualidade depende do OCR e da resposta do modelo. O resultado deve ser revisado por uma pessoa.
 
-## Recursos planejados
-- **Processamento de OCR Integrado:** Capacidade de extrair textos de PDFs convencionais e arquivos escaneados.
-- **Busca Semântica por Contexto:** Filtro inteligente que entende comandos específicos (ex: "identificar pontos sobre LGPD") utilizando IA, superando buscas simples por palavras-chave.
-- **Visualizador de PDF Interativo:** Interface web ágil e responsiva que renderiza as marcações visuais diretamente na tela do usuário.
-- **Exportação e Integração:** Função dedicada para baixar o documento processado e visualmente destacado.
+Mais detalhes sobre o produto e as próximas etapas estão no [PRD](agent/PRD.md).
 
-##  Tecnologias e Bibliotecas Utilizadas
+## Requisitos
 
-### Frontend planejado (fora deste repositorio)
-- **Vue.js:** Construção da interface em formato Saas, simulando como seria o sistema da DPO.
-- **Tailwind CSS:** Estilização rápida e responsiva, garantindo que o módulo se integre visualmente aos padrões internos.
-- **vue-pdf:** Renderização interativa do contrato e das marcações diretamente no navegador do auditor.
+- Python e as dependências de [requirements.txt](requirements.txt).
+- Tesseract OCR instalado, com os dados do idioma português (`por`) ou de outro idioma configurado.
+- Uma chave da API Gemini e acesso ao modelo escolhido.
 
-### Backend & Processamento de Documentos (atual e planejado)
-- **PyMuPDF:** Manipulação de alta performance para ler PDFs, encontrar coordenadas exatas no texto e injetar as marcações visuais (highlights) no arquivo final.
-- **Pytesseract (OCR):** Motor integrado para ler e extrair textos de documentos escaneados.
-- **Gemini API:** Analisa o texto extraído e seleciona palavras relevantes para o contexto informado pelo auditor.
+## Configuração e execução
 
+1. Instale as dependências:
 
-## Estado e execucao do backend
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
 
-A API executa OCR em todas as páginas e envia o texto e o prompt à API do Gemini, que seleciona palavras relevantes. O frontend, a geração de PDF marcado e a exportação ainda são planejados; veja [o PRD](agent/PRD.md).
+2. Copie `.env.example` para `.env` caso o arquivo ainda não exista. No PowerShell:
 
-1. Instale Python, o Tesseract OCR e os dados de idioma portugues (`por`).
-2. Instale as dependencias: `python -m pip install -r requirements.txt`.
-3. Se o Tesseract nao estiver no PATH, defina `TESSERACT_CMD` com o caminho completo do executavel. Defina `TESSERACT_LANG` para outro idioma se necessario (padrao: `por`). No PowerShell, por exemplo: `$env:TESSERACT_CMD = "C:\Program Files\Tesseract-OCR\tesseract.exe"`.
-4. No arquivo `.env` da raiz do projeto, preencha `GEMINI_API_KEY` com sua chave. Opcionalmente, altere `GEMINI_MODEL` (padrão: `gemini-2.5-flash`). O arquivo `.env.example` serve de modelo e o `.env` não é incluído no Git. Variáveis já definidas no ambiente têm prioridade.
-5. Inicie a API com `python -m uvicorn api_tesseract:app --reload` e acesse `http://127.0.0.1:8000/docs`. Envie `arquivo` (PDF) e `prompt` (texto não vazio) como campos multipart de `POST /tesseract`.
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
-A resposta inclui `mensagem`, `nome_arquivo`, `dados` (TSV do Tesseract) e `palavras_selecionadas`. Cada palavra selecionada contém `id`, `texto`, `pagina` (começando em 1), `coordenadas` (`x`, `y`, `largura`, `altura`) e `pagina_largura` e `pagina_altura`. As coordenadas são pixels da imagem renderizada pelo OCR, com origem no canto superior esquerdo; dimensione-as proporcionalmente ao tamanho da página exibida. Considere a orientação da página renderizada e teste a integração com PDFs rotacionados.
+3. Edite `.env` conforme sua instalação:
 
-O Gemini recebe somente o texto extraído e o prompt, sem IDs ou coordenadas. O backend associa as palavras ou trechos retornados ao OCR e marca todas as ocorrências correspondentes; trechos que o modelo alterar e que não correspondam ao texto extraído não são marcados.
+   ```env
+   GEMINI_API_KEY=sua-chave
+   GEMINI_MODEL=gemini-3.1-flash-lite
+   TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
+   TESSERACT_LANG=por
+   ```
 
-Exemplo de chamada no PowerShell:
+   Ajuste `TESSERACT_CMD` para o caminho do executável na sua máquina; ele pode ser omitido se o Tesseract estiver no `PATH`. `TESSERACT_LANG` usa `por` por padrão. O modelo do exemplo foi usado com sucesso em um teste, mas a disponibilidade pode variar por chave e ao longo do tempo. Se `GEMINI_MODEL` não estiver definido, o código usa `gemini-2.5-flash`, que pode não estar disponível para sua conta.
+
+   A API carrega o `.env` da raiz na inicialização. Variáveis já definidas no ambiente têm prioridade. O `.env` é ignorado pelo Git; reinicie a API após alterá-lo.
+
+4. Inicie a API:
+
+   ```powershell
+   python -m uvicorn api_tesseract:app --reload
+   ```
+
+5. Acesse `http://127.0.0.1:8000/docs` para testar a rota.
+
+## API
+
+### `POST /tesseract`
+
+Envie os seguintes campos `multipart/form-data`:
+
+- `arquivo`: PDF a ser analisado.
+- `prompt`: texto não vazio descrevendo o que deve ser encontrado.
+
+Exemplo no PowerShell:
 
 ```powershell
 curl.exe -X POST http://127.0.0.1:8000/tesseract -F "arquivo=@contrato.pdf" -F "prompt=Identifique os trechos sobre tratamento de dados pessoais"
 ```
 
-PDF inválido ou prompt vazio retorna 400; campo obrigatório ausente retorna 422; falha no OCR, configuração ausente ou falha do Gemini retorna 503. O texto extraído e o prompt são enviados ao Google; avalie as regras de privacidade aplicáveis antes de processar documentos reais.
-O backend e acessado pela API e esta organizado em `dpo_vision/domain`, `application`, `infrastructure` e `api`.
+Exemplo de resposta; os valores de OCR e coordenadas são ilustrativos:
 
+```json
+{
+  "mensagem": "Arquivo processado.",
+  "nome_arquivo": "contrato.pdf",
+  "dados": "level\tpage_num\t...\n...",
+  "palavras_selecionadas": [
+    {
+      "id": 1,
+      "texto": "dados",
+      "pagina": 1,
+      "coordenadas": {"x": 100, "y": 200, "largura": 80, "altura": 30},
+      "pagina_largura": 2480,
+      "pagina_altura": 3508
+    }
+  ]
+}
+```
 
-Notas Mapelli: Configurar o env antes de tentar rodar:
+`dados` contém o TSV produzido pelo Tesseract. Os números de `pagina` começam em 1. As coordenadas das palavras são medidas em pixels na imagem da página renderizada para OCR, a 300 DPI, com origem no canto superior esquerdo. O frontend deve escalá-las proporcionalmente às dimensões exibidas e verificar a orientação da página, especialmente em PDFs rotacionados.
 
-Rodar isso no powershell
-$env:TESSERACT_CMD = "C:\Program Files\Tesseract-OCR\tesseract.exe" <- Caminho do tesseract na sua máquina
-$env:TESSERACT_LANG = "por"
+O Gemini recebe o texto extraído e o prompt, sem IDs ou coordenadas. O backend compara os trechos retornados com as palavras do OCR, ignorando diferenças entre maiúsculas e minúsculas e pontuação nas bordas. Todas as ocorrências correspondentes são selecionadas; trechos que não correspondam ao texto reconhecido não são marcados. Uma correspondência não atravessa páginas.
 
-python -m uvicorn api_tesseract:app --reload
+A API retorna 400 para PDF inválido ou prompt vazio, 422 para campos obrigatórios ausentes e 503 para falhas do OCR ou do Gemini, incluindo chave ausente. O Gemini pode demorar ou ficar indisponível; o backend não configura atualmente um limite explícito de tempo para a chamada.
+
+O texto extraído e o prompt são enviados ao Google. Avalie o tratamento e as regras de privacidade dos documentos antes de processá-los.
+
+## Organização
+
+O backend usa FastAPI, PyMuPDF, Pytesseract e o SDK do Gemini. O código está organizado em `dpo_vision/domain`, `application`, `infrastructure` e `api`; `api_tesseract.py` é o ponto de entrada para o Uvicorn. O frontend planejado não está neste repositório.
