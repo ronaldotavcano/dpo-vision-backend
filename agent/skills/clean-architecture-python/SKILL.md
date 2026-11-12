@@ -112,4 +112,4 @@ class Container(containers.DeclarativeContainer):
 
 ## DPO Vision project note
 
-This repository currently does not maintain an automated test suite. Keep the domain, application, infrastructure, and API boundaries clear; verify behavior during implementation and review without adding test files unless the project direction changes.
+This repository currently does not maintain an automated test suite. Keep the domain, application, infrastructure, and API boundaries clear; verify behavior during implementation and review without adding test files unless the project direction changes. 
