@@ -17,6 +17,24 @@ Mais detalhes sobre o produto e as próximas etapas estão no [PRD](agent/PRD.md
 - Tesseract OCR instalado, com os dados do idioma português (`por`) ou de outro idioma configurado.
 - Uma chave da API Gemini e acesso ao modelo escolhido.
 
+## Instalação do Tesseract no Windows
+
+1. Acesse a [página do instalador mantido pela UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki) e baixe o instalador adequado para seu Windows.
+2. Execute o instalador. Na seleção de componentes, inclua os dados do idioma **Portuguese** (`por`), em **Additional language data**, caso ainda não estejam selecionados.
+3. Conclua a instalação e anote a pasta escolhida. O caminho normalmente é `C:\Program Files\Tesseract-OCR\tesseract.exe`.
+4. No PowerShell, verifique a versão e os idiomas instalados, ajustando o caminho se necessário:
+
+   ```powershell
+   & "C:\Program Files\Tesseract-OCR\tesseract.exe" --version
+   & "C:\Program Files\Tesseract-OCR\tesseract.exe" --list-langs
+   ```
+
+   A lista deve incluir `por`. Se não incluir, execute novamente o instalador e adicione o idioma português.
+
+5. Na configuração do projeto abaixo, informe o caminho do executável em `TESSERACT_CMD` e use `TESSERACT_LANG=por`.
+
+Para outros sistemas, consulte a [documentação de instalação do Tesseract](https://github.com/tesseract-ocr/tessdoc/blob/main/Installation.md).
+
 ## Configuração e execução
 
 1. Instale as dependências:
