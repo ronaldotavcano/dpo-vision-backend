@@ -5,11 +5,13 @@ fastapi
 pydantic
 uvicorn
 python-multipart
+python-dotenv
 
 # Leitura de imagens, PDFs e OCR
 Pillow
 PyMuPDF
 pytesseract
+google-genai
 
 # Dependencia externa: instale o Tesseract OCR no sistema com o idioma por.
 # Configure TESSERACT_CMD se o executavel nao estiver no PATH; TESSERACT_LANG padrao: por.

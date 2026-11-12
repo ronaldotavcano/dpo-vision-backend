@@ -7,6 +7,6 @@ class DocumentOcrPort(Protocol):
 
 
 class SemanticSearchPort(Protocol):
-    """Future provider for locating relevant text within a document."""
+    """Select text from the document relevant to a user's query."""
 
-    def search(self, document: DocumentOcr, query: str) -> list[dict]: ...
+    def search(self, text: str, query: str) -> list[str]: ...

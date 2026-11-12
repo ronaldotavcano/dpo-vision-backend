@@ -7,7 +7,7 @@ Auditores de privacidade da DPOnet precisam localizar evidencias em contratos pa
 Permitir que o auditor envie um PDF, informe o contexto de analise, examine trechos relevantes no documento e baixe uma copia com destaques. Medir tempo de analise, sucesso do processamento e qualidade dos trechos selecionados com uma amostra avaliada por auditores; metas numericas dependem de uma linha de base.
 
 ## Estado atual
-O backend oferece OCR em portugues para todas as paginas via `POST /tesseract`. O OCR usa PyMuPDF e Tesseract. Busca semantica, selecao de trechos, destaques, exportacao e visualizador ainda nao estao implementados. O frontend nao esta neste repositorio.
+O backend oferece OCR em portugues para todas as paginas via `POST /tesseract` e usa o Gemini para selecionar palavras relevantes ao prompt, devolvendo suas coordenadas. Destaques no PDF, exportacao e visualizador ainda nao estao implementados. O frontend nao esta neste repositorio.
 
 ## Jornada e requisitos
 1. O auditor envia um PDF legivel ou digitalizado e informa o contexto desejado.
@@ -17,9 +17,9 @@ O backend oferece OCR em portugues para todas as paginas via `POST /tesseract`. 
 5. Erros de entrada, processamento ou dependencias sao apresentados de modo compreensivel. Dados de documentos devem ter tratamento, acesso e retencao definidos antes de uso em producao.
 
 ## Contratos e arquitetura
-A API existente aceita `POST /tesseract` com multipart `arquivo` e retorna `mensagem`, `nome_arquivo` e `dados` (TSV Tesseract, com numero de pagina). PDFs invalidos retornam 400; falha ou indisponibilidade do Tesseract retorna 503.
+A API aceita `POST /tesseract` com multipart `arquivo` e `prompt` e retorna `mensagem`, `nome_arquivo`, `dados` (TSV Tesseract) e `palavras_selecionadas` com pagina e coordenadas. PDFs invalidos retornam 400; falha ou indisponibilidade do Tesseract ou Gemini retorna 503. O contrato detalhado esta no README.
 
-Para as proximas etapas, definir contratos versionados para submissao e resultado do processamento, consulta semantica com identificadores de pagina e coordenadas, selecao de trechos e download do PDF marcado. Esses contratos serao acordados com o frontend antes da implementacao; ainda nao existem rotas para essas funcoes. A porta `SemanticSearchPort` representa a integracao futura, nao um provedor funcional.
+Para as proximas etapas, acordar contratos versionados com o frontend e implementar selecao revisavel e download do PDF marcado. A porta `SemanticSearchPort` possui um adaptador para o Gemini.
 
 A aplicacao separa dominio, casos de uso e portas, infraestrutura e API. A skill aplicada esta em `skills/clean-architecture-python/SKILL.md`; ela orienta dependencias voltadas para o dominio e o uso de portas e adaptadores.
 

@@ -4,3 +4,7 @@ class InvalidDocumentError(Exception):
 
 class OcrUnavailableError(Exception):
     """The OCR engine or its language data is unavailable."""
+
+
+class SemanticSearchUnavailableError(Exception):
+    """The semantic analysis service is unavailable or returned invalid data."""
